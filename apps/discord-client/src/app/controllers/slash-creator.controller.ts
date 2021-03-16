@@ -28,6 +28,18 @@ export class SlashCreatorController {
         SlashCreatorController.debug('Ready');
     }
 
+    public static getCommandGuilds(): string[] {
+        const guildsRaw = process.env.BB_DISCORD_GUILDS;
+
+        if (!guildsRaw) {
+            throw new Error('Command configuration error!');
+        }
+
+        return guildsRaw.toString()
+            .split(',')
+            .map((id) => id.trim());
+    }
+
     public init(discordService: DiscordService): SlashCreatorService {
         SlashCreatorController.debug('Init');
         this.creator.withServer(new GatewayServer(discordService.getCommandHandler()));

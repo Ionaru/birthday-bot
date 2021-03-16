@@ -28,6 +28,7 @@ services:
             - BB_API_PORT
             - BB_API_URL
             - BB_DISCORD_CLIENT_PORT
+            - BB_DISCORD_GUILDS
             - BB_DISCORD_TOKEN
             - BB_DISCORD_ID
             - BB_DISCORD_KEY

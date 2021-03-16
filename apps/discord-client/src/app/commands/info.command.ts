@@ -2,6 +2,7 @@
 import { CommandContext, SlashCommand, SlashCreator } from 'slash-create';
 
 import { debug } from '../../debug';
+import { SlashCreatorController } from '../controllers/slash-creator.controller';
 import { DiscordService } from '../services/discord.service';
 
 export default class InfoCommand extends SlashCommand {
@@ -15,7 +16,7 @@ export default class InfoCommand extends SlashCommand {
         super(creator, {
             name: 'info',
             description: 'Show information about the bot',
-            guildIDs: '302014526201659392',
+            guildIDs: SlashCreatorController.getCommandGuilds(),
         });
     }
 

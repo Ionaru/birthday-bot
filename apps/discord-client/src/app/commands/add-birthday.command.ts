@@ -3,6 +3,7 @@ import { HandledError } from '@birthday-bot/interfaces';
 import { CommandContext, CommandOptionType, SlashCommand, SlashCreator } from 'slash-create';
 
 import { debug } from '../../debug';
+import { SlashCreatorController } from '../controllers/slash-creator.controller';
 import { ApiService } from '../services/api.service';
 
 export default class AddBirthdayCommand extends SlashCommand {
@@ -11,12 +12,12 @@ export default class AddBirthdayCommand extends SlashCommand {
 
     public constructor(
         creator: SlashCreator,
-        private readonly storageService: ApiService,
+        private readonly apiService: ApiService,
     ) {
         super(creator, {
             name: 'add-birthday',
             description: 'Add a birthday 🎂',
-            guildIDs: '302014526201659392',
+            guildIDs: SlashCreatorController.getCommandGuilds(),
             options: [{
                 type: CommandOptionType.USER,
                 name: 'user',
@@ -62,7 +63,7 @@ export default class AddBirthdayCommand extends SlashCommand {
         }
 
         try {
-            await this.storageService.createBirthday(user, channel, birthday);
+            await this.apiService.createBirthday(user, channel, birthday);
         } catch (e: unknown) {
             await context.send(`Could not register birthday, reason: ${e}`);
             if (!(e instanceof HandledError)) {

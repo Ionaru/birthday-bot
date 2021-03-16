@@ -3,6 +3,7 @@ import { HandledError } from '@birthday-bot/interfaces';
 import { CommandContext, CommandOptionType, SlashCommand, SlashCreator } from 'slash-create';
 
 import { debug } from '../../debug';
+import { SlashCreatorController } from '../controllers/slash-creator.controller';
 import { ApiService } from '../services/api.service';
 
 export default class RemoveBirthdayCommand extends SlashCommand {
@@ -11,12 +12,12 @@ export default class RemoveBirthdayCommand extends SlashCommand {
 
     public constructor(
         creator: SlashCreator,
-        private readonly storageService: ApiService,
+        private readonly apiService: ApiService,
     ) {
         super(creator, {
             name: 'remove-birthday',
             description: 'Remove a birthday 😢',
-            guildIDs: '302014526201659392',
+            guildIDs: SlashCreatorController.getCommandGuilds(),
             options: [
                 {
                     type: CommandOptionType.USER,
@@ -35,7 +36,7 @@ export default class RemoveBirthdayCommand extends SlashCommand {
         const user = context.options.user as string;
 
         try {
-            await this.storageService.deleteBirthday(user);
+            await this.apiService.deleteBirthday(user);
         } catch (e: unknown) {
             await context.send(`Could not delete birthday, reason: ${e}`);
             if (!(e instanceof HandledError)) {
