@@ -6,15 +6,15 @@ import { StatusCodes } from 'http-status-codes';
 export default class BirthdaysRoute extends BaseRouter {
     public constructor() {
         super();
-        this.createRoute('get', '/', this.getBirthdays.bind(this));
-        this.createRoute('post', '/', this.postBirthday.bind(this));
+        this.createRoute('get', '/', BirthdaysRoute.getBirthdays);
+        this.createRoute('post', '/', BirthdaysRoute.postBirthday);
         this.createRoute('all', '/', BirthdaysRoute.methodNotAllowed);
 
-        this.createRoute('get', '/:id', this.getBirthday.bind(this));
+        this.createRoute('get', '/:id', BirthdaysRoute.getBirthday);
         this.createRoute('all', '*', BirthdaysRoute.methodNotAllowed);
     }
 
-    private async getBirthday(request: Request<{ id?: string }, unknown, unknown, unknown>, response: Response) {
+    private static async getBirthday(request: Request<{ id?: string }, unknown, unknown, unknown>, response: Response) {
         if (!request.params.id) {
             return BirthdaysRoute.sendBadRequest(response, 'id', 'Invalid');
         }
@@ -27,12 +27,12 @@ export default class BirthdaysRoute extends BaseRouter {
         return BirthdaysRoute.sendSuccess(response, birthday);
     }
 
-    private async getBirthdays(_request: Request, response: Response) {
+    private static async getBirthdays(_request: Request, response: Response) {
         const birthdays = await Birthday.find();
         return BirthdaysRoute.sendSuccess(response, birthdays);
     }
 
-    private async postBirthday(request: Request<unknown, unknown, Unsure<IBirthday>, unknown>, response: Response) {
+    private static async postBirthday(request: Request<unknown, unknown, Unsure<IBirthday>, unknown>, response: Response) {
         if (!request.body.user || typeof request.body.user !== 'string') {
             return BirthdaysRoute.sendBadRequest(response, 'user', 'Invalid');
         }
@@ -45,7 +45,10 @@ export default class BirthdaysRoute extends BaseRouter {
             return BirthdaysRoute.sendBadRequest(response, 'birthday', 'Invalid');
         }
 
-        const existingBirthday = await Birthday.findOne({where: {user: request.body.user}});
+        const existingBirthday = await Birthday.findOne({
+            channel: request.body.channel,
+            user: request.body.user,
+        });
         if (existingBirthday) {
             return BirthdaysRoute.sendResponse(response, StatusCodes.CONFLICT, 'Duplicate');
         }
