@@ -253,6 +253,18 @@
             "projectType": "application",
             "prefix": "api",
             "targets": {
+                "serve-all": {
+                    "builder": "@nrwl/workspace:run-commands",
+                    "options": {
+                        "commands": [
+                            {"command": "nx serve api"},
+                            {"command": "nx serve storage"},
+                            {"command": "nx serve discord-client"},
+                            {"command": "nx serve calendar"}
+                        ],
+                        "parallel": true
+                    }
+                },
                 "build-image": {
                     "executor": "@nrwl/workspace:run-commands",
                     "options": {
