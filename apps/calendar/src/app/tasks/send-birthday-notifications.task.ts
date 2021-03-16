@@ -15,7 +15,7 @@ export class SendBirthdayNotificationsTask {
         this.cronJob = new CronJob({
             cronTime: '0 0 18 * * *',
             onTick: () => this.tick(),
-            runOnInit: true,
+            runOnInit: false,
             timeZone: 'UTC',
         });
     }
