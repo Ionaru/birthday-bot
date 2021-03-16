@@ -10,7 +10,7 @@ export class ServerController {
     public constructor(routes: IRoute[]) {
         ServerController.debug('Start');
 
-        const port = Number(process.env.BB_BIRTHDAY_SERVICE_PORT) || 3000;
+        const port = Number(process.env.BB_STORAGE_PORT) || 3000;
 
         if (isNaN(port)) {
             throw new Error('Server configuration error!');
