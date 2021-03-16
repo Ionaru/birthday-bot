@@ -1,15 +1,13 @@
-import { IBirthday } from '@birthday-bot/interfaces';
+import { HandledError, IBirthday } from '@birthday-bot/interfaces';
 import { IServerResponse } from '@ionaru/micro-web-service';
 import { AxiosError, AxiosInstance } from 'axios';
-
-export class HandledError extends Error {}
 
 export class ApiService {
     public constructor(
         private readonly client: AxiosInstance,
     ) { }
 
-    public async createBirthday(user: string, channel: string, birthday: string) {
+    public async createBirthday(user: string, channel: string, birthday: string): Promise<void> {
         const data = {user, channel, birthday};
         const response = await this.client.post<IServerResponse<IBirthday>>('storage', data)
             .catch((error: AxiosError) => error);
@@ -35,7 +33,7 @@ export class ApiService {
         return response.data.data;
     }
 
-    public async deleteBirthday(user: string) {
+    public async deleteBirthday(user: string): Promise<void> {
         const response = await this.client.delete(`storage/${user}`)
             .catch((error: AxiosError) => error);
 

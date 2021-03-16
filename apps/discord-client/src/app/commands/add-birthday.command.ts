@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/tslint/config */
+import { HandledError } from '@birthday-bot/interfaces';
 import { CommandContext, CommandOptionType, SlashCommand, SlashCreator } from 'slash-create';
 
 import { debug } from '../../debug';
-import { ApiService, HandledError } from '../services/api.service';
+import { ApiService } from '../services/api.service';
 
 export default class AddBirthdayCommand extends SlashCommand {
 

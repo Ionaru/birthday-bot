@@ -1,5 +1,5 @@
 import { BirthdayNotificationType, IBirthday } from '@birthday-bot/interfaces';
-import { Client, WebSocketManager } from 'discord.js';
+import { Client, Message, WebSocketManager } from 'discord.js';
 import { InteractionHandler } from 'slash-create/lib/server';
 
 export class DiscordService {
@@ -11,7 +11,7 @@ export class DiscordService {
         return (handler: InteractionHandler) => this.discordClient.ws.on('INTERACTION_CREATE' as any, handler);
     }
 
-    public async sendDiscordNotification(type: BirthdayNotificationType, birthday: IBirthday) {
+    public async sendDiscordNotification(type: BirthdayNotificationType, birthday: IBirthday): Promise<Message> {
         const channel = await this.discordClient.channels.fetch(birthday.channel);
 
         if (!channel || !channel.isText()) {

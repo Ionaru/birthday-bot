@@ -1,9 +1,9 @@
 import { BirthdayNotificationType, IBirthday, INotification, Unsure } from '@birthday-bot/interfaces';
 import { BaseRouter, Request, Response } from '@ionaru/micro-web-service';
+import { StatusCodes } from 'http-status-codes';
 
 import { ApiService } from '../services/api.service';
 import { DiscordService } from '../services/discord.service';
-import { StatusCodes } from 'http-status-codes';
 
 export default class NotificationsRoute extends BaseRouter {
     public constructor(
