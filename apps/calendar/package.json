@@ -4,6 +4,7 @@
     },
     "dependencies": {
         "chalk": "4.1.0",
+        "http-status-codes": "2.1.4",
         "supports-color": "8.1.1"
     }
 }
