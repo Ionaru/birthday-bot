@@ -4,12 +4,14 @@
 /dist
 /tmp
 /out-tsc
+/data
 
 # dependencies
 /node_modules
 
 # IDEs and editors
 /.idea
+*.iml
 .project
 .classpath
 .c9/
@@ -33,7 +35,9 @@ npm-debug.log
 yarn-error.log
 testem.log
 /typings
+/certs
 
 # System Files
 .DS_Store
 Thumbs.db
+.env

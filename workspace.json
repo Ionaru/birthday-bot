@@ -1,10 +1,319 @@
 {
-  
-  
-  "version": 2,
-  
-  "projects": {},
-  "cli": {
-    "defaultCollection": "@nrwl/workspace"
-  }
+    "version": 2,
+    "projects": {
+        "discord-client": {
+            "root": "apps/discord-client",
+            "sourceRoot": "apps/discord-client/src",
+            "projectType": "application",
+            "prefix": "discord-client",
+            "targets": {
+                "build-image": {
+                    "executor": "@nrwl/workspace:run-commands",
+                    "options": {
+                        "commands": [
+                            {
+                                "command": "nx build discord-client --production",
+                                "forwardAllArgs": false
+                            },
+                            "docker build -f ./apps/discord-client/Dockerfile -t discord-client:{args.tag} ."
+                        ],
+                        "parallel": false
+                    }
+                },
+                "build": {
+                    "executor": "@nrwl/node:build",
+                    "outputs": [
+                        "{options.outputPath}"
+                    ],
+                    "options": {
+                        "generatePackageJson": true,
+                        "outputPath": "dist/apps/discord-client",
+                        "main": "apps/discord-client/src/main.ts",
+                        "tsConfig": "apps/discord-client/tsconfig.app.json"
+                    },
+                    "configurations": {
+                        "production": {
+                            "optimization": true,
+                            "extractLicenses": true,
+                            "inspect": false
+                        }
+                    }
+                },
+                "serve": {
+                    "executor": "@nrwl/node:execute",
+                    "options": {
+                        "buildTarget": "discord-client:build"
+                    }
+                },
+                "lint": {
+                    "executor": "@nrwl/linter:eslint",
+                    "options": {
+                        "lintFilePatterns": [
+                            "apps/discord-client/**/*.ts"
+                        ]
+                    }
+                },
+                "test": {
+                    "executor": "@nrwl/jest:jest",
+                    "outputs": [
+                        "coverage/apps/discord-client"
+                    ],
+                    "options": {
+                        "jestConfig": "apps/discord-client/jest.config.js",
+                        "passWithNoTests": true
+                    }
+                }
+            }
+        },
+        "entities": {
+            "root": "libs/entities",
+            "sourceRoot": "libs/entities/src",
+            "projectType": "library",
+            "targets": {
+                "lint": {
+                    "executor": "@nrwl/linter:eslint",
+                    "options": {
+                        "lintFilePatterns": [
+                            "libs/entities/**/*.ts"
+                        ]
+                    }
+                },
+                "test": {
+                    "executor": "@nrwl/jest:jest",
+                    "outputs": [
+                        "coverage/libs/entities"
+                    ],
+                    "options": {
+                        "jestConfig": "libs/entities/jest.config.js",
+                        "passWithNoTests": true
+                    }
+                }
+            }
+        },
+        "interfaces": {
+            "root": "libs/interfaces",
+            "sourceRoot": "libs/interfaces/src",
+            "projectType": "library",
+            "targets": {
+                "lint": {
+                    "executor": "@nrwl/linter:eslint",
+                    "options": {
+                        "lintFilePatterns": [
+                            "libs/interfaces/**/*.ts"
+                        ]
+                    }
+                },
+                "test": {
+                    "executor": "@nrwl/jest:jest",
+                    "outputs": [
+                        "coverage/libs/interfaces"
+                    ],
+                    "options": {
+                        "jestConfig": "libs/interfaces/jest.config.js",
+                        "passWithNoTests": true
+                    }
+                }
+            }
+        },
+        "storage": {
+            "root": "apps/storage",
+            "sourceRoot": "apps/storage/src",
+            "projectType": "application",
+            "prefix": "birthday-service",
+            "targets": {
+                "build-image": {
+                    "executor": "@nrwl/workspace:run-commands",
+                    "options": {
+                        "commands": [
+                            {
+                                "command": "npx tsc -p apps/storage/tsconfig.app.json",
+                                "forwardAllArgs": false
+                            },
+                            {
+                                "command": "nx build storage --production",
+                                "forwardAllArgs": false
+                            },
+                            "docker build -f ./apps/storage/Dockerfile -t storage:{args.tag} ."
+                        ],
+                        "parallel": false
+                    }
+                },
+                "build": {
+                    "executor": "@nrwl/node:build",
+                    "outputs": [
+                        "{options.outputPath}"
+                    ],
+                    "options": {
+                        "generatePackageJson": true,
+                        "outputPath": "dist/apps/storage",
+                        "main": "apps/storage/src/main.ts",
+                        "tsConfig": "apps/storage/tsconfig.app.json"
+                    },
+                    "configurations": {
+                        "production": {
+                            "optimization": true,
+                            "extractLicenses": true,
+                            "inspect": false
+                        }
+                    }
+                },
+                "serve": {
+                    "executor": "@nrwl/node:execute",
+                    "options": {
+                        "buildTarget": "storage:build"
+                    }
+                },
+                "lint": {
+                    "executor": "@nrwl/linter:eslint",
+                    "options": {
+                        "lintFilePatterns": [
+                            "apps/storage/**/*.ts"
+                        ]
+                    }
+                },
+                "test": {
+                    "executor": "@nrwl/jest:jest",
+                    "outputs": [
+                        "coverage/apps/storage"
+                    ],
+                    "options": {
+                        "jestConfig": "apps/storage/jest.config.js",
+                        "passWithNoTests": true
+                    }
+                }
+            }
+        },
+        "calendar": {
+            "root": "apps/calendar",
+            "sourceRoot": "apps/calendar/src",
+            "projectType": "application",
+            "prefix": "calendar",
+            "targets": {
+                "build-image": {
+                    "executor": "@nrwl/workspace:run-commands",
+                    "options": {
+                        "commands": [
+                            {
+                                "command": "nx build calendar --production",
+                                "forwardAllArgs": false
+                            },
+                            "docker build -f ./apps/calendar/Dockerfile -t calendar:{args.tag} ."
+                        ],
+                        "parallel": false
+                    }
+                },
+                "build": {
+                    "executor": "@nrwl/node:build",
+                    "outputs": [
+                        "{options.outputPath}"
+                    ],
+                    "options": {
+                        "generatePackageJson": true,
+                        "outputPath": "dist/apps/calendar",
+                        "main": "apps/calendar/src/main.ts",
+                        "tsConfig": "apps/calendar/tsconfig.app.json"
+                    },
+                    "configurations": {
+                        "production": {
+                            "optimization": true,
+                            "extractLicenses": true,
+                            "inspect": false
+                        }
+                    }
+                },
+                "serve": {
+                    "executor": "@nrwl/node:execute",
+                    "options": {
+                        "buildTarget": "calendar:build"
+                    }
+                },
+                "lint": {
+                    "executor": "@nrwl/linter:eslint",
+                    "options": {
+                        "lintFilePatterns": [
+                            "apps/calendar/**/*.ts"
+                        ]
+                    }
+                },
+                "test": {
+                    "executor": "@nrwl/jest:jest",
+                    "outputs": [
+                        "coverage/apps/calendar"
+                    ],
+                    "options": {
+                        "jestConfig": "apps/calendar/jest.config.js",
+                        "passWithNoTests": true
+                    }
+                }
+            }
+        },
+        "api": {
+            "root": "apps/api",
+            "sourceRoot": "apps/api/src",
+            "projectType": "application",
+            "prefix": "api",
+            "targets": {
+                "build-image": {
+                    "executor": "@nrwl/workspace:run-commands",
+                    "options": {
+                        "commands": [
+                            {
+                                "command": "nx build api --production",
+                                "forwardAllArgs": false
+                            },
+                            "docker build -f ./apps/api/Dockerfile -t api:{args.tag} ."
+                        ],
+                        "parallel": false
+                    }
+                },
+                "build": {
+                    "executor": "@nrwl/node:build",
+                    "outputs": [
+                        "{options.outputPath}"
+                    ],
+                    "options": {
+                        "generatePackageJson": true,
+                        "outputPath": "dist/apps/api",
+                        "main": "apps/api/src/main.ts",
+                        "tsConfig": "apps/api/tsconfig.app.json"
+                    },
+                    "configurations": {
+                        "production": {
+                            "optimization": true,
+                            "extractLicenses": true,
+                            "inspect": false
+                        }
+                    }
+                },
+                "serve": {
+                    "executor": "@nrwl/node:execute",
+                    "options": {
+                        "buildTarget": "api:build"
+                    }
+                },
+                "lint": {
+                    "executor": "@nrwl/linter:eslint",
+                    "options": {
+                        "lintFilePatterns": [
+                            "apps/api/**/*.ts"
+                        ]
+                    }
+                },
+                "test": {
+                    "executor": "@nrwl/jest:jest",
+                    "outputs": [
+                        "coverage/apps/api"
+                    ],
+                    "options": {
+                        "jestConfig": "apps/api/jest.config.js",
+                        "passWithNoTests": true
+                    }
+                }
+            }
+        }
+    },
+    "cli": {
+        "defaultCollection": "@nrwl/express"
+    },
+    "defaultProject": "api"
 }

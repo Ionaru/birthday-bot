@@ -1,31 +1,28 @@
 {
-  "npmScope": "birthday-bot",
-  "affected": {
-    "defaultBase": "master"
-  },
-  "implicitDependencies": {
-    "workspace.json": "*",
-    "package.json": {
-      "dependencies": "*",
-      "devDependencies": "*"
+    "npmScope": "birthday-bot",
+    "affected": {"defaultBase": "main"},
+    "implicitDependencies": {
+        "workspace.json": "*",
+        "package.json": {"dependencies": "*", "devDependencies": "*"},
+        "tsconfig.base.json": "*",
+        "tslint.json": "*",
+        ".eslintrc.json": "*",
+        "nx.json": "*"
     },
-    "tsconfig.base.json": "*",
-    "tslint.json": "*",
-    ".eslintrc.json": "*",
-    "nx.json": "*"
-  },
-  "tasksRunnerOptions": {
-    "default": {
-      "runner": "@nrwl/workspace/tasks-runners/default",
-      "options": {
-        "cacheableOperations": [
-          "build",
-          "lint",
-          "test",
-          "e2e"
-        ]
-      }
+    "tasksRunnerOptions": {
+        "default": {
+            "runner": "@nrwl/workspace/tasks-runners/default",
+            "options": {
+                "cacheableOperations": ["build", "lint", "test", "e2e"]
+            }
+        }
+    },
+    "projects": {
+        "discord-client": {"tags": []},
+        "entities": {"tags": []},
+        "interfaces": {"tags": []},
+        "storage": {"tags": []},
+        "calendar": {"tags": []},
+        "api": {"tags": []}
     }
-  },
-  "projects": {}
 }
