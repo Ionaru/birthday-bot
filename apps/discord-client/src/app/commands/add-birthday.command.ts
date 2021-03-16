@@ -31,12 +31,12 @@ export default class AddBirthdayCommand extends SlashCommand {
             }, {
                 type: CommandOptionType.INTEGER,
                 name: 'month',
-                description: 'The month of the birthday.',
+                description: 'The month of the birthday',
                 required: true,
             }, {
                 type: CommandOptionType.INTEGER,
                 name: 'year',
-                description: 'The year the person is born~',
+                description: 'The year the person is born',
             }],
         });
     }
