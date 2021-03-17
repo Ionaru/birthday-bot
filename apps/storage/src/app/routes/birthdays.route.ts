@@ -11,7 +11,26 @@ export default class BirthdaysRoute extends BaseRouter {
         this.createRoute('all', '/', BirthdaysRoute.methodNotAllowed);
 
         this.createRoute('get', '/:id', BirthdaysRoute.getBirthday);
+        this.createRoute('delete', '/:id', BirthdaysRoute.deleteBirthday);
         this.createRoute('all', '*', BirthdaysRoute.methodNotAllowed);
+    }
+
+    private static async deleteBirthday(request: Request<{ id?: string }, unknown, unknown, unknown>, response: Response) {
+        if (!request.params.id) {
+            return BirthdaysRoute.sendBadRequest(response, 'id', 'Invalid');
+        }
+
+        const [user, channel] = request.params.id.split(':');
+
+        const birthday = await Birthday.findOne({channel, user});
+
+        if (!birthday) {
+            return BirthdaysRoute.sendNotFound(response, request.params.id);
+        }
+
+        await birthday.remove();
+
+        return BirthdaysRoute.sendSuccess(response);
     }
 
     private static async getBirthday(request: Request<{ id?: string }, unknown, unknown, unknown>, response: Response) {

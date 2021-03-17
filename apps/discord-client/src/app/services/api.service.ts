@@ -48,8 +48,8 @@ export class ApiService {
         return response.data.data;
     }
 
-    public async deleteBirthday(user: string): Promise<void> {
-        const response = await this.client.delete(`storage/${user}`)
+    public async deleteBirthday(user: string, channel: string): Promise<void> {
+        const response = await this.client.delete(`storage/${user}:${channel}`)
             .catch((error: AxiosError) => error);
 
         if (response instanceof Error) {

@@ -36,7 +36,7 @@ export default class RemoveBirthdayCommand extends SlashCommand {
         const user = context.options.user as string;
 
         try {
-            await this.apiService.deleteBirthday(user);
+            await this.apiService.deleteBirthday(user, context.channelID);
         } catch (e: unknown) {
             await context.send(`Could not delete birthday, reason: ${e}`);
             if (!(e instanceof HandledError)) {
