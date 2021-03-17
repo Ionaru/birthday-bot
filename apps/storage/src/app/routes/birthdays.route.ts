@@ -2,6 +2,7 @@ import Birthday from '@birthday-bot/entities';
 import { IBirthday, Unsure } from '@birthday-bot/interfaces';
 import { BaseRouter, Request, Response } from '@ionaru/micro-web-service';
 import { StatusCodes } from 'http-status-codes';
+import { utc } from 'moment';
 
 export default class BirthdaysRoute extends BaseRouter {
     public constructor() {
@@ -48,7 +49,23 @@ export default class BirthdaysRoute extends BaseRouter {
 
     private static async getBirthdays(_request: Request, response: Response) {
         const birthdays = await Birthday.find();
-        return BirthdaysRoute.sendSuccess(response, birthdays);
+
+        const birthdaySorter = (left: Birthday, right: Birthday): -1 | 0 | 1 => {
+            const leftBirthday = utc(left.birthday).set('year', 2000);
+            const rightBirthday = utc(right.birthday).set('year', 2000);
+
+            if (leftBirthday.isBefore(rightBirthday)) {
+                return -1;
+            }
+
+            if (leftBirthday.isAfter(rightBirthday)) {
+                return 1;
+            }
+
+            return 0;
+        };
+
+        return BirthdaysRoute.sendSuccess(response, birthdays.sort(birthdaySorter));
     }
 
     private static async postBirthday(request: Request<unknown, unknown, Unsure<IBirthday>, unknown>, response: Response) {
