@@ -1,11 +1,35 @@
 import { BirthdayNotificationType, IBirthday } from '@birthday-bot/interfaces';
-import { Client, Message, WebSocketManager } from 'discord.js';
+import { Client, DMChannel, GuildMember, Message, TextChannel, User, WebSocketManager } from 'discord.js';
 import { InteractionHandler } from 'slash-create/lib/server';
 
 export class DiscordService {
     public constructor(
         private readonly discordClient: Client,
     ) {}
+
+    public getUserName(user?: GuildMember | User): string {
+        if (!user) {
+            return 'Unknown user';
+        }
+        return user instanceof User ? user.username : user.displayName;
+    }
+
+    public async getUsersInChannel(id: string): Promise<Array<GuildMember | User>> {
+        const channel = await this.discordClient.channels.fetch(id);
+        if (!channel.isText()) {
+            return [];
+        }
+
+        if (channel instanceof TextChannel) {
+            return channel.members.array();
+        }
+
+        if (channel instanceof DMChannel) {
+            return [channel.recipient];
+        }
+
+        return [];
+    }
 
     public getCommandHandler(): (handler: InteractionHandler) => WebSocketManager {
         return (handler: InteractionHandler) => this.discordClient.ws.on('INTERACTION_CREATE' as any, handler);

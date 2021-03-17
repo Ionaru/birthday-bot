@@ -5,6 +5,7 @@ import { config } from 'dotenv';
 
 import AddBirthdayCommand from './app/commands/add-birthday.command';
 import InfoCommand from './app/commands/info.command';
+import ListBirthdaysCommand from './app/commands/list-birthdays.command';
 import RemoveBirthdayCommand from './app/commands/remove-birthday.command';
 import { ApiClientController } from './app/controllers/api-client.controller';
 import { DiscordBotController } from './app/controllers/discord-bot.controller';
@@ -32,6 +33,7 @@ const start = async () => {
     slashCreatorService.registerCommand((creator) => new InfoCommand(creator, discordService));
     slashCreatorService.registerCommand((creator) => new RemoveBirthdayCommand(creator, apiService));
     slashCreatorService.registerCommand((creator) => new AddBirthdayCommand(creator, apiService));
+    slashCreatorService.registerCommand((creator) => new ListBirthdaysCommand(creator, apiService, discordService));
 
     serverController = new ServerController([
         ['/', new NotificationsRoute(discordService, apiService)],

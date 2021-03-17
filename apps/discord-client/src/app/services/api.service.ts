@@ -18,8 +18,23 @@ export class ApiService {
         }
     }
 
+    public async getBirthdays(): Promise<IBirthday[]> {
+        const response = await this.client.get<IServerResponse<IBirthday[]>>(`storage`)
+            .catch((error: AxiosError) => error);
+
+        if (response instanceof Error) {
+            throw response;
+        }
+
+        if (!response.data.data) {
+            throw new Error('Empty response');
+        }
+
+        return response.data.data;
+    }
+
     public async getBirthday(id: string): Promise<IBirthday> {
-        const response = await this.client.get<IServerResponse<IBirthday>>(`/storage/${id}`)
+        const response = await this.client.get<IServerResponse<IBirthday>>(`storage/${id}`)
             .catch((error: AxiosError) => error);
 
         if (response instanceof Error) {
