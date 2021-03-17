@@ -5,7 +5,7 @@ import { debug } from '../../debug';
 import { SlashCreatorController } from '../controllers/slash-creator.controller';
 import { DiscordService } from '../services/discord.service';
 
-export default class InfoCommand extends SlashCommand {
+export class InfoCommand extends SlashCommand {
 
     private static readonly debug = debug.extend('InfoCommand');
 

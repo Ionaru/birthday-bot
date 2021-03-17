@@ -5,7 +5,7 @@ import { config } from 'dotenv';
 
 import { DatabaseController } from './app/controllers/database.controller';
 import { ServerController } from './app/controllers/server.controller';
-import BirthdaysRoute from './app/routes/birthdays.route';
+import { BirthdaysRoute } from './app/routes/birthdays.route';
 import { debug } from './debug';
 
 let serverController: ServerController;

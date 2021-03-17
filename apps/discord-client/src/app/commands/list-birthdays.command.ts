@@ -7,7 +7,7 @@ import { SlashCreatorController } from '../controllers/slash-creator.controller'
 import { ApiService } from '../services/api.service';
 import { DiscordService } from '../services/discord.service';
 
-export default class ListBirthdaysCommand extends SlashCommand {
+export class ListBirthdaysCommand extends SlashCommand {
 
     private static readonly debug = debug.extend('ListBirthdaysCommand');
 

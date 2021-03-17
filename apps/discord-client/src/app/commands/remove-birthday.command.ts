@@ -6,7 +6,7 @@ import { debug } from '../../debug';
 import { SlashCreatorController } from '../controllers/slash-creator.controller';
 import { ApiService } from '../services/api.service';
 
-export default class RemoveBirthdayCommand extends SlashCommand {
+export class RemoveBirthdayCommand extends SlashCommand {
 
     private static readonly debug = debug.extend('RemoveBirthdayCommand');
 

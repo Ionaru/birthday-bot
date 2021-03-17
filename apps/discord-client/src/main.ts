@@ -3,15 +3,15 @@ import { format } from 'util';
 import { handleExceptions, handleSignals, NotFoundRoute } from '@ionaru/micro-web-service';
 import { config } from 'dotenv';
 
-import AddBirthdayCommand from './app/commands/add-birthday.command';
-import InfoCommand from './app/commands/info.command';
-import ListBirthdaysCommand from './app/commands/list-birthdays.command';
-import RemoveBirthdayCommand from './app/commands/remove-birthday.command';
+import { AddBirthdayCommand } from './app/commands/add-birthday.command';
+import { InfoCommand } from './app/commands/info.command';
+import { ListBirthdaysCommand } from './app/commands/list-birthdays.command';
+import { RemoveBirthdayCommand } from './app/commands/remove-birthday.command';
 import { ApiClientController } from './app/controllers/api-client.controller';
 import { DiscordBotController } from './app/controllers/discord-bot.controller';
 import { ServerController } from './app/controllers/server.controller';
 import { SlashCreatorController } from './app/controllers/slash-creator.controller';
-import NotificationsRoute from './app/routes/notifications.route';
+import { NotificationsRoute } from './app/routes/notifications.route';
 import { debug } from './debug';
 
 let discordBotController: DiscordBotController;

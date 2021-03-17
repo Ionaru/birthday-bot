@@ -5,7 +5,7 @@ import { StatusCodes } from 'http-status-codes';
 import { ApiService } from '../services/api.service';
 import { DiscordService } from '../services/discord.service';
 
-export default class NotificationsRoute extends BaseRouter {
+export class NotificationsRoute extends BaseRouter {
     public constructor(
         private readonly discordService: DiscordService,
         private readonly apiService: ApiService,

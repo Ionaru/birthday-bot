@@ -1,10 +1,10 @@
-import Birthday from '@birthday-bot/entities';
+import { Birthday } from '@birthday-bot/entities';
 import { IBirthday, Unsure } from '@birthday-bot/interfaces';
 import { BaseRouter, Request, Response } from '@ionaru/micro-web-service';
 import { StatusCodes } from 'http-status-codes';
 import { utc } from 'moment';
 
-export default class BirthdaysRoute extends BaseRouter {
+export class BirthdaysRoute extends BaseRouter {
     public constructor() {
         super();
         this.createRoute('get', '/', BirthdaysRoute.getBirthdays);

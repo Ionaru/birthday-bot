@@ -1,4 +1,4 @@
-import Birthday from '@birthday-bot/entities';
+import { Birthday } from '@birthday-bot/entities';
 import { QueryLogger } from '@ionaru/typeorm-utils';
 import { createConnection, EntityMetadata, getConnection, getConnectionOptions } from 'typeorm';
 

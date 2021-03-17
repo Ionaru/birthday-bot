@@ -6,7 +6,7 @@ import { Column, Entity, Unique } from 'typeorm';
     name: Birthday.alias,
 })
 @Unique(['user', 'channel'])
-export default class Birthday extends BaseModel implements IBirthday {
+export class Birthday extends BaseModel implements IBirthday {
 
     public static readonly alias = 'birthday';
 

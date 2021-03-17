@@ -1,1 +1,1 @@
-export { default } from './lib/birthday';
+export { Birthday } from './lib/birthday';
