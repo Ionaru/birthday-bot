@@ -27,6 +27,12 @@ export default class ListBirthdaysCommand extends SlashCommand {
         await context.acknowledge(true);
 
         const birthdays = await this.apiService.getBirthdays();
+
+        if (!birthdays.length) {
+            context.send('No birthdays found.').then();
+            return;
+        }
+
         const channelBirthdays = birthdays.filter((birthday) => birthday.channel === context.channelID);
         const birthdayNames = await this.discordService.getUsersInChannel(context.channelID);
 
@@ -34,6 +40,6 @@ export default class ListBirthdaysCommand extends SlashCommand {
             const birthdayUser = birthdayNames.find((user) => user.id === birthday.user);
             return `• ${this.discordService.getUserName(birthdayUser)}, ${birthday.birthday}`;
         }).join('\n');
-        await context.send(`⠀\n**Birthdays**\n${birthdaysText}`);
+        context.send(`⠀\n**Birthdays**\n${birthdaysText}`).then();
     }
 }
