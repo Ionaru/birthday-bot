@@ -9,13 +9,15 @@ import { BirthdaysRoute } from './app/routes/birthdays.route';
 import { debug } from './debug';
 
 let serverController: ServerController;
+let databaseController: DatabaseController;
 
 const start = async () => {
     debug(`App start: ${process.env.NODE_ENV}!`);
 
     config();
 
-    await new DatabaseController().init();
+    databaseController = new DatabaseController();
+    await databaseController.init();
 
     serverController = new ServerController([
         ['/', new BirthdaysRoute()],
@@ -29,6 +31,7 @@ const start = async () => {
 
 const stop = async () => {
     await serverController.stop();
+    await databaseController.stop();
 };
 
 const exit = (code = 0) => {
