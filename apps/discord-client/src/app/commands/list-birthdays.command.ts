@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/tslint/config */
+import { utc } from 'moment';
 import { CommandContext, SlashCommand, SlashCreator } from 'slash-create';
 
 import { debug } from '../../debug';
@@ -34,11 +35,11 @@ export default class ListBirthdaysCommand extends SlashCommand {
         }
 
         const channelBirthdays = birthdays.filter((birthday) => birthday.channel === context.channelID);
-        const birthdayNames = await this.discordService.getUsersInChannel(context.channelID);
+        const channelUsers = await this.discordService.getUsersInChannel(context.channelID);
 
         const birthdaysText = channelBirthdays.map((birthday) => {
-            const birthdayUser = birthdayNames.find((user) => user.id === birthday.user);
-            return `• ${this.discordService.getUserName(birthdayUser)}, ${birthday.birthday}`;
+            const birthdayUser = channelUsers.find((user) => user.id === birthday.user);
+            return `• ${this.discordService.getUserName(birthdayUser, birthday.user)}, ${utc(birthday.birthday).format('MMMM Do')}`;
         }).join('\n');
         context.send(`⠀\n**Birthdays**\n${birthdaysText}`).then();
     }

@@ -7,9 +7,9 @@ export class DiscordService {
         private readonly discordClient: Client,
     ) {}
 
-    public getUserName(user?: GuildMember | User): string {
+    public getUserName(user: GuildMember | User | undefined, id: string): string {
         if (!user) {
-            return 'Unknown user';
+            return `Unknown user with id: ${id}`;
         }
         return user instanceof User ? user.username : user.displayName;
     }
