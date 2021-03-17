@@ -1,6 +1,7 @@
 import { Birthday } from '@birthday-bot/entities';
 import { QueryLogger } from '@ionaru/typeorm-utils';
 import { createConnection, EntityMetadata, getConnection, getConnectionOptions } from 'typeorm';
+import { SqliteConnectionOptions } from 'typeorm/driver/sqlite/SqliteConnectionOptions';
 
 import { debug } from '../../debug';
 
@@ -22,8 +23,10 @@ export class DatabaseController {
             entities: [Birthday],
             logger: new QueryLogger(debug),
             logging: ['query', 'error'],
+            migrations: ['migrations/*.js'],
+            migrationsRun: true,
             name: 'default',
-        });
+        } as Partial<SqliteConnectionOptions>);
 
         const connection = await createConnection(connectionOptions);
 

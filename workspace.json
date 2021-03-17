@@ -26,7 +26,6 @@
                         "{options.outputPath}"
                     ],
                     "options": {
-                        "generatePackageJson": true,
                         "outputPath": "dist/apps/discord-client",
                         "main": "apps/discord-client/src/main.ts",
                         "tsConfig": "apps/discord-client/tsconfig.app.json"
@@ -144,7 +143,6 @@
                         "{options.outputPath}"
                     ],
                     "options": {
-                        "generatePackageJson": true,
                         "outputPath": "dist/apps/storage",
                         "main": "apps/storage/src/main.ts",
                         "tsConfig": "apps/storage/tsconfig.app.json"
@@ -208,7 +206,6 @@
                         "{options.outputPath}"
                     ],
                     "options": {
-                        "generatePackageJson": true,
                         "outputPath": "dist/apps/calendar",
                         "main": "apps/calendar/src/main.ts",
                         "tsConfig": "apps/calendar/tsconfig.app.json"
@@ -284,7 +281,6 @@
                         "{options.outputPath}"
                     ],
                     "options": {
-                        "generatePackageJson": true,
                         "outputPath": "dist/apps/api",
                         "main": "apps/api/src/main.ts",
                         "tsConfig": "apps/api/tsconfig.app.json"

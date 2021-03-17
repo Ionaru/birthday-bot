@@ -4,10 +4,10 @@ WORKDIR /app
 
 # Install dependencies
 ENV NODE_ENV production
-COPY ./dist/apps/discord-client/package.json ./
+COPY ./package.json ./package-lock.json ./
 RUN npm install --production
 
-# Copy main file
-COPY ./dist/apps/discord-client/main.js ./
+# Copy main files
+COPY ./dist/apps/discord-client/main.js ./dist/apps/discord-client/main.js.map ./
 
-CMD ["npm", "start"]
+CMD ["node", "main.js"]

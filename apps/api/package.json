@@ -1,9 +1,0 @@
-{
-    "scripts": {
-        "start": "node main.js"
-    },
-    "dependencies": {
-        "chalk": "4.1.0",
-        "supports-color": "8.1.1"
-    }
-}

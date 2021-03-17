@@ -2,16 +2,15 @@ FROM node:14-alpine
 
 WORKDIR /app
 
-COPY ./ormconfig.js ./
-
 # Install dependencies
 ENV NODE_ENV production
-COPY ./dist/apps/storage/package.json ./
+COPY ./package.json ./package-lock.json ./
 RUN npm install --production
 
+COPY ./ormconfig.js ./
 COPY ./dist/out-tsc/apps/storage/migrations ./migrations
 
-# Copy main file
-COPY ./dist/apps/storage/main.js ./
+# Copy main files
+COPY ./dist/apps/storage/main.js ./dist/apps/storage/main.js.map ./
 
-CMD ["npm", "start"]
+CMD ["node", "main.js"]

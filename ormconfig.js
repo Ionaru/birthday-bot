@@ -29,7 +29,7 @@ const buildConnectionOptions = (
         connectionOptions.cli = {
             migrationsDir,
         };
-        connectionOptions.migrations = [`${migrationsDir}/*.{js,ts}`, 'migrations/*.js'];
+        connectionOptions.migrations = [`${migrationsDir}/*.ts`];
         connectionOptions.migrationsTableName = 'migrations';
     }
 

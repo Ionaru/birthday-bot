@@ -4,10 +4,10 @@ WORKDIR /app
 
 # Install dependencies
 ENV NODE_ENV production
-COPY ./dist/apps/api/package.json ./
+COPY ./package.json ./package-lock.json ./
 RUN npm install --production
 
 # Copy main file
-COPY ./dist/apps/api/main.js ./
+COPY ./dist/apps/api/main.js ./dist/apps/api/main.js.map ./
 
-CMD ["npm", "start"]
+CMD ["node", "main.js"]
