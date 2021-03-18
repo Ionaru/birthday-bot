@@ -11,6 +11,7 @@
 
 # IDEs and editors
 /.idea
+/.vscode
 *.iml
 .project
 .classpath
@@ -18,13 +19,6 @@
 *.launch
 .settings/
 *.sublime-workspace
-
-# IDE - VSCode
-.vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
 
 # misc
 /.sass-cache
@@ -36,6 +30,7 @@ yarn-error.log
 testem.log
 /typings
 /certs
+*.db
 
 # System Files
 .DS_Store
