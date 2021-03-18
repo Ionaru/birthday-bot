@@ -44,25 +44,32 @@ export class DiscordService {
             throw new Error(`Could not find channel: ${birthday.channel}`);
         }
 
-        let message: string | undefined;
+        const channelUsers = await this.getUsersInChannel(birthday.channel);
+        const birthdayUser = channelUsers.find((user) => user.id === birthday.user);
+        const name = this.getUserName(birthdayUser, birthday.user);
+
+        let message = '@here\n';
+
+        if (type === BirthdayNotificationType.TODAY) {
+            message = `@here\n**HAPPY BIRTHDAY ${name.toUpperCase()}!!!!!!!** 🎂🎈`;
+            return channel.send(message);
+        }
+
         switch (type) {
-            case BirthdayNotificationType.TODAY:
-                message = 'TODAY!';
-                break;
             case BirthdayNotificationType.DAY:
-                message = 'DAY!';
+                message += 'Tomorrow ';
                 break;
             case BirthdayNotificationType.WEEK:
-                message = 'WEEK!';
+                message += 'Next week ';
                 break;
             case BirthdayNotificationType.FORTNIGHT:
-                message = 'FORTNIGHT!';
+                message += 'In two weeks ';
+                break;
+            default:
+                message += `At some point (${birthday.birthday}) `;
         }
 
-        if (!message) {
-            throw new Error(`No message.`);
-        }
-
+        message += `we celebrate the birthday of ${name}!`;
         return channel.send(message);
     }
 

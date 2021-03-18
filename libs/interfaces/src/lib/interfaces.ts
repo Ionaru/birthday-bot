@@ -18,7 +18,8 @@ export interface INotification {
 }
 
 export enum BirthdayNotificationType {
-    TODAY,
+    // Start at index 1 to make checks for undefined easier.
+    TODAY = 1,
     DAY,
     WEEK,
     FORTNIGHT,

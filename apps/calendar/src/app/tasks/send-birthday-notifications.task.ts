@@ -39,6 +39,8 @@ export class SendBirthdayNotificationsTask {
                 notificationType = BirthdayNotificationType.TODAY;
             }
 
+            // moment.subtract modifies the entity it was called on.
+
             birthdayDate.subtract(1, 'day');
             if (utc().isSame(birthdayDate, 'day')) {
                 notificationType = BirthdayNotificationType.DAY;
