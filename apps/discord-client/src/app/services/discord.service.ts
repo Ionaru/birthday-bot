@@ -21,7 +21,9 @@ export class DiscordService {
         }
 
         if (channel instanceof TextChannel) {
-            return channel.members.array();
+            const guild = await channel.guild.fetch();
+            const members = await guild.members.fetch();
+            return members.array();
         }
 
         if (channel instanceof DMChannel) {
