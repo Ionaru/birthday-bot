@@ -6,5 +6,6 @@ module.exports = {
         '<rootDir>/libs/interfaces',
         '<rootDir>/apps/calendar',
         '<rootDir>/apps/api',
+        '<rootDir>/libs/common',
     ],
 };

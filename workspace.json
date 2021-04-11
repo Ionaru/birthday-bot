@@ -22,9 +22,7 @@
                 },
                 "build": {
                     "executor": "@nrwl/node:build",
-                    "outputs": [
-                        "{options.outputPath}"
-                    ],
+                    "outputs": ["{options.outputPath}"],
                     "options": {
                         "outputPath": "dist/apps/discord-client",
                         "main": "apps/discord-client/src/main.ts",
@@ -40,23 +38,17 @@
                 },
                 "serve": {
                     "executor": "@nrwl/node:execute",
-                    "options": {
-                        "buildTarget": "discord-client:build"
-                    }
+                    "options": {"buildTarget": "discord-client:build"}
                 },
                 "lint": {
                     "executor": "@nrwl/linter:eslint",
                     "options": {
-                        "lintFilePatterns": [
-                            "apps/discord-client/**/*.ts"
-                        ]
+                        "lintFilePatterns": ["apps/discord-client/**/*.ts"]
                     }
                 },
                 "test": {
                     "executor": "@nrwl/jest:jest",
-                    "outputs": [
-                        "coverage/apps/discord-client"
-                    ],
+                    "outputs": ["coverage/apps/discord-client"],
                     "options": {
                         "jestConfig": "apps/discord-client/jest.config.js",
                         "passWithNoTests": true
@@ -71,17 +63,11 @@
             "targets": {
                 "lint": {
                     "executor": "@nrwl/linter:eslint",
-                    "options": {
-                        "lintFilePatterns": [
-                            "libs/entities/**/*.ts"
-                        ]
-                    }
+                    "options": {"lintFilePatterns": ["libs/entities/**/*.ts"]}
                 },
                 "test": {
                     "executor": "@nrwl/jest:jest",
-                    "outputs": [
-                        "coverage/libs/entities"
-                    ],
+                    "outputs": ["coverage/libs/entities"],
                     "options": {
                         "jestConfig": "libs/entities/jest.config.js",
                         "passWithNoTests": true
@@ -97,16 +83,12 @@
                 "lint": {
                     "executor": "@nrwl/linter:eslint",
                     "options": {
-                        "lintFilePatterns": [
-                            "libs/interfaces/**/*.ts"
-                        ]
+                        "lintFilePatterns": ["libs/interfaces/**/*.ts"]
                     }
                 },
                 "test": {
                     "executor": "@nrwl/jest:jest",
-                    "outputs": [
-                        "coverage/libs/interfaces"
-                    ],
+                    "outputs": ["coverage/libs/interfaces"],
                     "options": {
                         "jestConfig": "libs/interfaces/jest.config.js",
                         "passWithNoTests": true
@@ -139,9 +121,7 @@
                 },
                 "build": {
                     "executor": "@nrwl/node:build",
-                    "outputs": [
-                        "{options.outputPath}"
-                    ],
+                    "outputs": ["{options.outputPath}"],
                     "options": {
                         "outputPath": "dist/apps/storage",
                         "main": "apps/storage/src/main.ts",
@@ -157,23 +137,15 @@
                 },
                 "serve": {
                     "executor": "@nrwl/node:execute",
-                    "options": {
-                        "buildTarget": "storage:build"
-                    }
+                    "options": {"buildTarget": "storage:build"}
                 },
                 "lint": {
                     "executor": "@nrwl/linter:eslint",
-                    "options": {
-                        "lintFilePatterns": [
-                            "apps/storage/**/*.ts"
-                        ]
-                    }
+                    "options": {"lintFilePatterns": ["apps/storage/**/*.ts"]}
                 },
                 "test": {
                     "executor": "@nrwl/jest:jest",
-                    "outputs": [
-                        "coverage/apps/storage"
-                    ],
+                    "outputs": ["coverage/apps/storage"],
                     "options": {
                         "jestConfig": "apps/storage/jest.config.js",
                         "passWithNoTests": true
@@ -202,9 +174,7 @@
                 },
                 "build": {
                     "executor": "@nrwl/node:build",
-                    "outputs": [
-                        "{options.outputPath}"
-                    ],
+                    "outputs": ["{options.outputPath}"],
                     "options": {
                         "outputPath": "dist/apps/calendar",
                         "main": "apps/calendar/src/main.ts",
@@ -220,23 +190,15 @@
                 },
                 "serve": {
                     "executor": "@nrwl/node:execute",
-                    "options": {
-                        "buildTarget": "calendar:build"
-                    }
+                    "options": {"buildTarget": "calendar:build"}
                 },
                 "lint": {
                     "executor": "@nrwl/linter:eslint",
-                    "options": {
-                        "lintFilePatterns": [
-                            "apps/calendar/**/*.ts"
-                        ]
-                    }
+                    "options": {"lintFilePatterns": ["apps/calendar/**/*.ts"]}
                 },
                 "test": {
                     "executor": "@nrwl/jest:jest",
-                    "outputs": [
-                        "coverage/apps/calendar"
-                    ],
+                    "outputs": ["coverage/apps/calendar"],
                     "options": {
                         "jestConfig": "apps/calendar/jest.config.js",
                         "passWithNoTests": true
@@ -277,9 +239,7 @@
                 },
                 "build": {
                     "executor": "@nrwl/node:build",
-                    "outputs": [
-                        "{options.outputPath}"
-                    ],
+                    "outputs": ["{options.outputPath}"],
                     "options": {
                         "outputPath": "dist/apps/api",
                         "main": "apps/api/src/main.ts",
@@ -295,33 +255,42 @@
                 },
                 "serve": {
                     "executor": "@nrwl/node:execute",
-                    "options": {
-                        "buildTarget": "api:build"
-                    }
+                    "options": {"buildTarget": "api:build"}
                 },
                 "lint": {
                     "executor": "@nrwl/linter:eslint",
-                    "options": {
-                        "lintFilePatterns": [
-                            "apps/api/**/*.ts"
-                        ]
-                    }
+                    "options": {"lintFilePatterns": ["apps/api/**/*.ts"]}
                 },
                 "test": {
                     "executor": "@nrwl/jest:jest",
-                    "outputs": [
-                        "coverage/apps/api"
-                    ],
+                    "outputs": ["coverage/apps/api"],
                     "options": {
                         "jestConfig": "apps/api/jest.config.js",
                         "passWithNoTests": true
                     }
                 }
             }
+        },
+        "common": {
+            "root": "libs/common",
+            "sourceRoot": "libs/common/src",
+            "projectType": "library",
+            "targets": {
+                "lint": {
+                    "executor": "@nrwl/linter:eslint",
+                    "options": {"lintFilePatterns": ["libs/common/**/*.ts"]}
+                },
+                "test": {
+                    "executor": "@nrwl/jest:jest",
+                    "outputs": ["coverage/libs/common"],
+                    "options": {
+                        "jestConfig": "libs/common/jest.config.js",
+                        "passWithNoTests": true
+                    }
+                }
+            }
         }
     },
-    "cli": {
-        "defaultCollection": "@nrwl/express"
-    },
+    "cli": {"defaultCollection": "@nrwl/express"},
     "defaultProject": "api"
 }

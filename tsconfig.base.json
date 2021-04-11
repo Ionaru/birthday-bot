@@ -23,7 +23,8 @@
         "baseUrl": ".",
         "paths": {
             "@birthday-bot/entities": ["libs/entities/src/index.ts"],
-            "@birthday-bot/interfaces": ["libs/interfaces/src/index.ts"]
+            "@birthday-bot/interfaces": ["libs/interfaces/src/index.ts"],
+            "@birthday-bot/common": ["libs/common/src/index.ts"]
         }
     },
     "exclude": ["node_modules", "tmp"]

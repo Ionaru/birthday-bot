@@ -1,40 +1,40 @@
 import { IRoute, ServiceController } from '@ionaru/micro-web-service';
-
-import { debug } from '../../debug';
+import { Debugger } from 'debug';
 
 export class ServerController {
-    private static readonly debug = debug.extend('ServerController');
 
+    private readonly debug: Debugger;
     private readonly serviceController: ServiceController;
 
-    public constructor(routes: IRoute[]) {
-        ServerController.debug('Start');
+    public constructor(routes: IRoute[], debug: Debugger, portEnv?: string) {
+        this.debug = debug.extend(this.constructor.name);
+        this.debug('Start');
 
-        const port = Number(process.env.BB_DISCORD_CLIENT_PORT) || 3000;
+        const port = Number(portEnv) || 3000;
 
         if (isNaN(port)) {
             throw new Error('Server configuration error!');
         }
 
-        ServerController.debug('Configuration OK');
+        this.debug('Configuration OK');
 
         this.serviceController = new ServiceController({
-            debug: ServerController.debug,
+            debug: this.debug,
             port,
             routes,
         });
 
-        ServerController.debug('Ready');
+        this.debug('Ready');
     }
 
     public async init(): Promise<void> {
-        ServerController.debug('Init');
+        this.debug('Init');
         await this.serviceController.listen();
     }
 
     public async stop(): Promise<void> {
-        ServerController.debug('Stop');
+        this.debug('Stop');
         await this.serviceController.close();
-        ServerController.debug('Server closed');
+        this.debug('Server closed');
     }
 }

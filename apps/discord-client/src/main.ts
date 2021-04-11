@@ -1,5 +1,6 @@
 import { format } from 'util';
 
+import { ApiClientController, DiscordBotController, ServerController } from '@birthday-bot/common';
 import { handleExceptions, handleSignals, NotFoundRoute } from '@ionaru/micro-web-service';
 import { config } from 'dotenv';
 
@@ -7,11 +8,10 @@ import { AddBirthdayCommand } from './app/commands/add-birthday.command';
 import { InfoCommand } from './app/commands/info.command';
 import { ListBirthdaysCommand } from './app/commands/list-birthdays.command';
 import { RemoveBirthdayCommand } from './app/commands/remove-birthday.command';
-import { ApiClientController } from './app/controllers/api-client.controller';
-import { DiscordBotController } from './app/controllers/discord-bot.controller';
-import { ServerController } from './app/controllers/server.controller';
 import { SlashCreatorController } from './app/controllers/slash-creator.controller';
 import { NotificationsRoute } from './app/routes/notifications.route';
+import { ApiService } from './app/services/api.service';
+import { DiscordService } from './app/services/discord.service';
 import { debug } from './debug';
 
 let discordBotController: DiscordBotController;
@@ -23,22 +23,26 @@ const start = async () => {
 
     config();
 
-    discordBotController = new DiscordBotController();
-    const discordService = await discordBotController.init();
+    discordBotController = new DiscordBotController(debug);
+    const discordService = await discordBotController.init(DiscordService);
 
     const slashCreatorService = new SlashCreatorController().init(discordService);
 
-    const apiService = new ApiClientController().init();
+    const apiService = new ApiClientController(debug).init(ApiService);
 
     slashCreatorService.registerCommand((creator) => new InfoCommand(creator, discordService));
     slashCreatorService.registerCommand((creator) => new RemoveBirthdayCommand(creator, apiService));
     slashCreatorService.registerCommand((creator) => new AddBirthdayCommand(creator, apiService));
     slashCreatorService.registerCommand((creator) => new ListBirthdaysCommand(creator, apiService, discordService));
 
-    serverController = new ServerController([
-        ['/', new NotificationsRoute(discordService, apiService)],
-        ['*', new NotFoundRoute()],
-    ]);
+    serverController = new ServerController(
+        [
+            ['/', new NotificationsRoute(discordService, apiService)],
+            ['*', new NotFoundRoute()],
+        ],
+        debug,
+        process.env.BB_DISCORD_CLIENT_PORT,
+    );
     await serverController.init();
 
     await slashCreatorService.syncCommands();

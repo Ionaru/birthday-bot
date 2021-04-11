@@ -23,6 +23,7 @@
         "interfaces": {"tags": []},
         "storage": {"tags": []},
         "calendar": {"tags": []},
-        "api": {"tags": []}
+        "api": {"tags": []},
+        "common": {"tags": []}
     }
 }

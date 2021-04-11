@@ -27,7 +27,7 @@ jobs:
 
         strategy:
             matrix:
-                app: [entities, interfaces, storage, discord-client, calendar, api]
+                app: [common, entities, interfaces, storage, discord-client, calendar, api]
 
         runs-on: ubuntu-latest
 
