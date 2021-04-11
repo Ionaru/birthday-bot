@@ -1,9 +1,10 @@
 import { format } from 'util';
 
+import { ApiClientController } from '@birthday-bot/common';
 import { handleExceptions, handleSignals } from '@ionaru/micro-web-service';
 import { config } from 'dotenv';
 
-import { ApiClientController } from './app/controllers/api-client.controller';
+import { ApiService } from './app/services/api.service';
 import { SendBirthdayNotificationsTask } from './app/tasks/send-birthday-notifications.task';
 import { debug } from './debug';
 
@@ -12,7 +13,7 @@ const start = async () => {
 
     config();
 
-    const apiService = new ApiClientController().init();
+    const apiService = new ApiClientController(debug).init(ApiService);
     new SendBirthdayNotificationsTask(apiService).start();
 
     handleExceptions(stop, exit);

@@ -1,10 +1,10 @@
 import { format } from 'util';
 
+import { ServerController } from '@birthday-bot/common';
 import { handleExceptions, handleSignals, NotFoundRoute } from '@ionaru/micro-web-service';
 import { config } from 'dotenv';
 
 import { DiscordClientProxyController } from './app/controllers/discord-client-proxy.controller';
-import { ServerController } from './app/controllers/server.controller';
 import { StorageProxyController } from './app/controllers/storage-proxy.controller';
 import { DiscordClientRoute } from './app/routes/discord-client.route';
 import { StorageRoute } from './app/routes/storage.route';
@@ -24,7 +24,7 @@ const start = async () => {
         ['/discord-client', new DiscordClientRoute(discordClientProxy)],
         ['/storage', new StorageRoute(storageProxy)],
         ['*', new NotFoundRoute()],
-    ]);
+    ], debug, process.env.BB_API_PORT);
     await serverController.init();
 
     handleExceptions(stop, exit);
