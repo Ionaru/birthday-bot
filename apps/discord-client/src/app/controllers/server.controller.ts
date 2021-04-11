@@ -19,6 +19,7 @@ export class ServerController {
         ServerController.debug('Configuration OK');
 
         this.serviceController = new ServiceController({
+            debug: ServerController.debug,
             port,
             routes,
         });

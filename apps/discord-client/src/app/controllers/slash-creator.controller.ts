@@ -24,6 +24,8 @@ export class SlashCreatorController {
         SlashCreatorController.debug('Configuration OK');
 
         this.creator = new SlashCreator({applicationID, publicKey, token});
+        this.creator.on('commandError', (_, e) => { throw e; });
+        this.creator.on('error', (e) => { throw e; });
 
         SlashCreatorController.debug('Ready');
     }

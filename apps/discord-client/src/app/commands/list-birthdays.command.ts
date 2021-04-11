@@ -25,7 +25,7 @@ export class ListBirthdaysCommand extends SlashCommand {
 
     public async run(context: CommandContext): Promise<void> {
         ListBirthdaysCommand.debug('Received');
-        await context.acknowledge(true);
+        await context.defer(true);
 
         const birthdays = await this.apiService.getBirthdays();
 

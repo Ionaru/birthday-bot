@@ -22,7 +22,7 @@ export class InfoCommand extends SlashCommand {
 
     public async run(context: CommandContext): Promise<void> {
         InfoCommand.debug('Received');
-        await context.acknowledge(true);
+        await context.defer(true);
         await context.send(`Hey, this is ${this.discordService.getUsername()}! :tada:`);
     }
 }

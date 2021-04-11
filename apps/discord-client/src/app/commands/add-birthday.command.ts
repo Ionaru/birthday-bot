@@ -47,7 +47,7 @@ export class AddBirthdayCommand extends SlashCommand {
 
     public async run(context: CommandContext): Promise<void> {
         AddBirthdayCommand.debug('Received');
-        await context.acknowledge(true);
+        await context.defer(true);
 
         const channel = context.channelID;
         const user = context.options.user as string;

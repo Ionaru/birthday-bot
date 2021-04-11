@@ -3,6 +3,7 @@
     "compilerOptions": {
         "rootDir": ".",
         "sourceMap": true,
+        "importHelpers": true,
         "declaration": false,
         "strict": true,
         "noUnusedLocals": true,

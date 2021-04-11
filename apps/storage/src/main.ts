@@ -6,6 +6,7 @@ import { config } from 'dotenv';
 import { DatabaseController } from './app/controllers/database.controller';
 import { ServerController } from './app/controllers/server.controller';
 import { BirthdaysRoute } from './app/routes/birthdays.route';
+import { BirthdayService } from './app/services/birthday.service';
 import { debug } from './debug';
 
 let serverController: ServerController;
@@ -20,7 +21,7 @@ const start = async () => {
     await databaseController.init();
 
     serverController = new ServerController([
-        ['/', new BirthdaysRoute()],
+        ['/', new BirthdaysRoute(new BirthdayService())],
         ['*', new NotFoundRoute()],
     ]);
     await serverController.init();

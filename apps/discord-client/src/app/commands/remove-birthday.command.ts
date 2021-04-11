@@ -31,7 +31,7 @@ export class RemoveBirthdayCommand extends SlashCommand {
 
     public async run(context: CommandContext): Promise<void> {
         RemoveBirthdayCommand.debug('Received');
-        await context.acknowledge(true);
+        await context.defer(true);
 
         const user = context.options.user as string;
 

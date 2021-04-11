@@ -251,7 +251,7 @@
             "prefix": "api",
             "targets": {
                 "serve-all": {
-                    "builder": "@nrwl/workspace:run-commands",
+                    "executor": "@nrwl/workspace:run-commands",
                     "options": {
                         "commands": [
                             {"command": "nx serve api"},
