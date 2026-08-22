@@ -81,6 +81,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   privileged intents.
 - The notification route no longer puts a caught error object straight into the
   response body.
+- **Every slash command appeared twice.** Discord keeps global and guild commands in
+  separate buckets and shows both, and a bulk PUT only overwrites the bucket it
+  targets. The pre-2026 bot always registered guild-scoped (it refused to start without
+  `BB_DISCORD_GUILDS`), so moving to global registration left the 2021 guild
+  registrations in place as a duplicate of every command, which Discord never expires.
+  Registration now treats the configured scope as the only scope and empties the other
+  one, which makes a redeploy self-healing. Note the implication: two deployments
+  sharing one Discord application will now clear each other's commands instead of
+  duplicating them, so development wants its own application.
 - A slash command that fails for an unexpected reason no longer flashes the internal
   error text at the user before replacing it with the generic message a moment later.
   Only a `HandledError` is shown; everything else is reported generically.

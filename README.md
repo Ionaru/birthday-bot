@@ -141,6 +141,11 @@ Commands registered globally can take up to an hour to appear in a server for th
 time. Setting `BIRTHDAYBOT_GUILDS` registers them in those servers immediately, which is
 useful while developing.
 
+Whichever scope is configured is treated as the only scope: on startup the bot empties
+the other one, so no stale command is left behind showing up as a duplicate in the
+picker. Because of that, use a **separate Discord application** for development rather
+than pointing a second deployment at the production one.
+
 Seven more variables exist for deployments that are not this Compose file. They all
 have working defaults, so a Compose deployment never needs to set any of them:
 
