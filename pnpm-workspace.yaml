@@ -1,0 +1,12 @@
+packages:
+  # Runnable services, one Docker image each.
+  - apps/*
+  # Shared code, never built into an image of its own.
+  - libs/*
+
+# pnpm 11 reads its settings from this file. Only auth and registry settings are
+# still read from .npmrc, which is why tagVersionPrefix lives here now.
+tagVersionPrefix: ""
+
+# Nothing in this project needs a build script at install time.
+onlyBuiltDependencies: []

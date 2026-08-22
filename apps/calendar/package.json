@@ -1,0 +1,13 @@
+{
+    "name": "@birthday-bot/calendar",
+    "version": "0.0.0",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "start": "node src/index.ts"
+    },
+    "dependencies": {
+        "@birthday-bot/common": "workspace:*",
+        "@birthday-bot/interfaces": "workspace:*"
+    }
+}
