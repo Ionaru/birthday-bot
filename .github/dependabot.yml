@@ -1,0 +1,28 @@
+version: 2
+
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      # These release together and break together, so update them as one PR.
+      eslint:
+        patterns:
+          - "@eslint/*"
+          - "@stylistic/eslint-plugin"
+          - "eslint"
+          - "typescript-eslint"
+      types:
+        patterns:
+          - "@types/*"
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+
+  - package-ecosystem: docker
+    directory: /deploy
+    schedule:
+      interval: weekly

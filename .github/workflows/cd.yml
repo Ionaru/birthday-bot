@@ -1,123 +1,213 @@
 name: BirthdayBot CD
 
 on:
-    workflow_dispatch:
-    push:
-        branches:
-            - main
-    pull_request:
-        branches:
-            - main
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+env:
+  NODE_VERSION: "24"
 
 jobs:
-    audit:
-        runs-on: ubuntu-latest
-        steps:
-            - uses: actions/checkout@v2
+  audit:
+    name: Audit dependencies
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+      # Reads pnpm-lock.yaml directly, so no install is needed.
+      - run: pnpm audit --prod
 
-            - uses: actions/setup-node@v2
-              with:
-                  node-version: '14'
+  get_sha:
+    name: Get short SHA for image tags
+    runs-on: ubuntu-latest
+    outputs:
+      sha_short: ${{ steps.get_sha.outputs.sha_short }}
+    steps:
+      - uses: actions/checkout@v7
+      - id: get_sha
+        run: echo "sha_short=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
 
-            - name: Audit
-              run: npm audit
+  test:
+    name: Lint, typecheck and test
+    needs: [audit]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm run lint
+      # There is no build step; Node runs the TypeScript directly and tsc only
+      # typechecks. erasableSyntaxOnly makes this fail on anything Node cannot strip.
+      - run: pnpm run typecheck
+      - run: pnpm run test
 
-    test:
-        needs: [audit]
+  # All four images are built in one job rather than a matrix. They differ only in
+  # which packages the filtered install pulls in, so they share almost every layer:
+  # building them together reuses the cache, and `docker save` of all four writes one
+  # archive with the shared layers stored once. A matrix would upload four nearly
+  # identical ~300MB tarballs instead.
+  build-image:
+    name: Build images
+    needs: [audit]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - run: docker compose -f deploy/compose.yaml build
+      - run: |
+          docker save -o birthday-bot-images.tar \
+            ghcr.io/ionaru/birthday-bot-api:latest \
+            ghcr.io/ionaru/birthday-bot-calendar:latest \
+            ghcr.io/ionaru/birthday-bot-discord-client:latest \
+            ghcr.io/ionaru/birthday-bot-storage:latest
+      - uses: actions/upload-artifact@v7
+        with:
+          name: birthday-bot-images
+          path: birthday-bot-images.tar
+          retention-days: 1
 
-        strategy:
-            matrix:
-                app: [common, entities, interfaces, storage, discord-client, calendar, api]
+  push-image:
+    name: Push images
+    if: github.event_name == 'push'
+    needs: [get_sha, test, build-image]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: birthday-bot-images
+      - run: docker load -i birthday-bot-images.tar
+      - uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Tag and push every service
+        run: |
+          set -eu
+          for service in api calendar discord-client storage; do
+            repository="ghcr.io/ionaru/birthday-bot-${service}"
+            docker tag "${repository}:latest" "${repository}:${{ needs.get_sha.outputs.sha_short }}"
+            docker push -a "$repository"
+          done
 
-        runs-on: ubuntu-latest
+  deploy:
+    name: Deploy
+    needs: [get_sha, push-image]
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    concurrency:
+      group: deploy
+      cancel-in-progress: false
+    steps:
+      - uses: appleboy/ssh-action@v1.2.5
+        env:
+          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+          GIT_REVISION: ${{ needs.get_sha.outputs.sha_short }}
+        with:
+          command_timeout: 15m
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_KEY }}
+          envs: DEPLOY_PATH,GIT_REVISION
+          script: |
+            set -eu
 
-        steps:
-            - uses: actions/checkout@v2
+            cd "$DEPLOY_PATH"
 
-            - uses: actions/setup-node@v2
-              with:
-                  node-version: '14'
+            # Match the checkout to the commit whose images were just published, so the
+            # compose file on disk and the running images always come from one commit.
+            git fetch --prune origin
+            git checkout --force "$GIT_REVISION"
 
-            - name: Install packages
-              run: npm ci
+            export BIRTHDAYBOT_GIT_REVISION="$GIT_REVISION"
 
-            - name: Lint
-              run: npm run lint ${{matrix.app}}
+            # --env-file is not optional. Compose does not auto-discover a .env at the
+            # checkout root when the compose file lives in deploy/, so without it the
+            # stack silently runs :latest against a named volume with no secrets.
+            #
+            # This body must stay a SINGLE command. A shell function used as the left
+            # operand of || runs with errexit disabled, so a multi-command body would
+            # keep going after a failure and return the last command's status, losing
+            # the real exit code.
+            compose() {
+              docker compose \
+                --project-name birthday-bot \
+                --env-file "$DEPLOY_PATH/.env" \
+                --file "$DEPLOY_PATH/deploy/compose.yaml" \
+                "$@"
+            }
 
-            - name: Test
-              run: npm test ${{matrix.app}}
+            compose pull
 
-    build-image:
-        needs: [test]
+            # "|| rc=$?" stops errexit aborting before the logs are printed.
+            rc=0
+            compose up --detach --pull=never --no-build --remove-orphans \
+              --wait --wait-timeout 180 || rc=$?
 
-        strategy:
-            matrix:
-                app: [storage, discord-client, calendar, api]
+            compose logs --tail=100
 
-        runs-on: ubuntu-latest
-        steps:
-            - uses: actions/checkout@v2
+            if [ "$rc" -ne 0 ]; then
+              exit "$rc"
+            fi
 
-            - uses: actions/setup-node@v2
-              with:
-                  node-version: '14'
+            # There are no healthchecks, so --wait only proves the containers reached
+            # "running". Watch them for a moment and confirm none is crash-looping.
+            # RestartCount is cumulative for the life of the container, so compare a
+            # delta rather than expecting zero: a redeploy that reuses an existing
+            # container would otherwise trip over a restart from weeks ago.
+            #
+            # This is what catches a missing or wrong BIRTHDAYBOT_TOKEN, which the
+            # discord-client reports by throwing during startup.
+            counts="$(mktemp)"
+            for service in api calendar discord-client storage; do
+              container="$(compose ps --all --quiet "$service")"
+              echo "$service $(docker inspect --format '{{.RestartCount}}' "$container")" >> "$counts"
+            done
 
-            - name: Install packages
-              run: npm ci
+            sleep 20
 
-            - name: Build
-              run: npm run nx build-image ${{matrix.app}} -- --tag latest
+            failed=0
+            while read -r service before; do
+              container="$(compose ps --all --quiet "$service")"
+              after="$(docker inspect --format '{{.RestartCount}}' "$container")"
+              status="$(docker inspect --format '{{.State.Status}}' "$container")"
+              if [ "$status" != "running" ] || [ "$after" -ne "$before" ]; then
+                echo "BirthdayBot $service is unhealthy: status=$status restarts=$before->$after" >&2
+                compose logs --tail=200 "$service"
+                failed=1
+              fi
+            done < "$counts"
+            rm -f "$counts"
 
-            - name: Save image
-              run: docker save ${{matrix.app}}:latest > ${{matrix.app}}-image.tar
+            if [ "$failed" -ne 0 ]; then
+              exit 1
+            fi
 
-            - uses: actions/upload-artifact@v2
-              with:
-                  name: ${{matrix.app}}-image
-                  path: ${{matrix.app}}-image.tar
-                  retention-days: 1
-
-    push-image:
-        needs: [build-image]
-
-        if: github.event_name == 'push'
-
-        strategy:
-            matrix:
-                app: [storage, discord-client, calendar, api]
-
-        runs-on: ubuntu-latest
-        steps:
-            - name: Retrieve saved Docker image
-              uses: actions/download-artifact@v2
-              with:
-                  name: ${{matrix.app}}-image
-
-            - name: Load image into docker
-              run: docker load < ${{matrix.app}}-image.tar
-
-            - name: Retag image for upload
-              run: docker tag ${{matrix.app}}:latest docker.saturnserver.org/birthday-bot/${{matrix.app}}:latest
-
-            - name: Login to Docker Registry
-              uses: docker/login-action@v1
-              with:
-                  registry: docker.saturnserver.org
-                  username: ${{ secrets.REGISTRY_USER }}
-                  password: ${{ secrets.REGISTRY_PASSWORD }}
-
-            - name: Push image
-              run: docker push docker.saturnserver.org/birthday-bot/${{matrix.app}}:latest
-
-    deploy:
-        needs: [push-image]
-
-        runs-on: ubuntu-latest
-        steps:
-            - uses: actions/setup-node@v2
-              with:
-                  node-version: '14'
-
-            - name: Deploy
-              if: github.event_name == 'push'
-              run: npx -q @ionaru/teamcity-deploy teamcity.saturnserver.org BirthdayBot_Deploy ${{ secrets.TEAMCITY_TOKEN }}
+            # Reclaim disk from superseded BirthdayBot images only. Other stacks share
+            # this Docker daemon, so a global "docker system prune --all" would delete
+            # theirs.
+            for service in api calendar discord-client storage; do
+              repository="ghcr.io/ionaru/birthday-bot-${service}"
+              stale="$(docker image ls --format '{{.Repository}}:{{.Tag}}' \
+                --filter "reference=${repository}" \
+                | grep -vx "${repository}:${GIT_REVISION}" || true)"
+              if [ -n "$stale" ]; then
+                echo "$stale" | xargs -r docker image rm --force || true
+              fi
+            done

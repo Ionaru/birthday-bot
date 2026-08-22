@@ -1,0 +1,69 @@
+# Four services, four images, all built from the one Dockerfile with a different
+# SERVICE argument.
+#
+# Nothing is published to the host. The services find each other by Compose service
+# name on the default network, which is why the URL and port environment variables
+# the old deployment needed are now defaults in the code.
+
+services:
+
+  api: # Gateway. The only service the other two clients talk to.
+    image: ghcr.io/ionaru/birthday-bot-api:${BIRTHDAYBOT_GIT_REVISION:-latest}
+    build:
+      context: ../
+      dockerfile: deploy/Dockerfile
+      args:
+        SERVICE: api
+    environment:
+      - DEBUG
+    depends_on:
+      - storage
+      - discord-client
+    restart: unless-stopped
+    init: true
+
+  calendar: # Fires the birthday notifications once a day at 18:00 UTC.
+    image: ghcr.io/ionaru/birthday-bot-calendar:${BIRTHDAYBOT_GIT_REVISION:-latest}
+    build:
+      context: ../
+      dockerfile: deploy/Dockerfile
+      args:
+        SERVICE: calendar
+    environment:
+      - DEBUG
+    depends_on:
+      - api
+    restart: unless-stopped
+    init: true
+
+  discord-client: # The Discord connection and the slash commands.
+    image: ghcr.io/ionaru/birthday-bot-discord-client:${BIRTHDAYBOT_GIT_REVISION:-latest}
+    build:
+      context: ../
+      dockerfile: deploy/Dockerfile
+      args:
+        SERVICE: discord-client
+    environment:
+      - BIRTHDAYBOT_TOKEN
+      - BIRTHDAYBOT_ID
+      - BIRTHDAYBOT_GUILDS
+      - DEBUG
+    restart: unless-stopped
+    init: true
+
+  storage: # Owns the SQLite database.
+    image: ghcr.io/ionaru/birthday-bot-storage:${BIRTHDAYBOT_GIT_REVISION:-latest}
+    build:
+      context: ../
+      dockerfile: deploy/Dockerfile
+      args:
+        SERVICE: storage
+    environment:
+      - DEBUG
+    volumes:
+      - ${BIRTHDAYBOT_DATA_VOLUME:-data}:/app/data
+    restart: unless-stopped
+    init: true
+
+volumes:
+  data:
