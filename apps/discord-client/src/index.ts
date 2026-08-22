@@ -37,7 +37,11 @@ const start = async (): Promise<void> => {
     ];
 
     clientController.registerCommandHandler(commands);
-    await syncCommands(commands, { applicationId, guildIds, token }, debug);
+    await syncCommands(
+        commands,
+        { applicationId, guildIds, joinedGuildIds: clientController.joinedGuildIds, token },
+        debug,
+    );
 
     const server = createHttpServer(createRoutes(apiService, discordService, debug), debug);
     const port = optionalPort('BIRTHDAYBOT_DISCORD_CLIENT_PORT', 3000);

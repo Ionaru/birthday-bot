@@ -29,14 +29,33 @@ export class ClientController {
         await this.client.destroy();
     }
 
+    /** The ids of the guilds the bot is in. Only valid once login() has resolved. */
+    public get joinedGuildIds(): string[] {
+        return [...this.client.guilds.cache.keys()];
+    }
+
+    /**
+     * Resolves once the client is ready, not merely once the token was accepted.
+     *
+     * client.login() resolves as soon as Discord accepts the token, which is before
+     * READY and therefore before guilds.cache is populated. Command registration needs
+     * that list to clear stale guild-scoped commands, so wait for the real thing.
+     */
     public async login(token: string): Promise<void> {
         this.debug('Logging in');
         this.client.on(Events.Warn, (warning: string) => process.emitWarning(warning));
-        this.client.once(Events.ClientReady, () => {
-            this.client.user?.setActivity('/info', { type: ActivityType.Listening });
-            this.debug('Logged in');
+
+        const ready = new Promise<void>((resolve) => {
+            this.client.once(Events.ClientReady, () => {
+                this.client.user?.setActivity('/info', { type: ActivityType.Listening });
+                this.debug('Logged in');
+                resolve();
+            });
         });
+
         await this.client.login(token);
+        await ready;
+        this.debug(`In ${this.joinedGuildIds.length} guild(s)`);
     }
 
     public registerCommandHandler(commands: readonly Command[]): void {
