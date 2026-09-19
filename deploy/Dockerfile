@@ -15,7 +15,7 @@
 # Copying the workspace and installing with a filter keeps the ordinary layout, where
 # apps/<service>/node_modules/@birthday-bot/common is a symlink to ../../../libs/common.
 # That real path is outside node_modules, so type stripping works.
-FROM node:24-alpine
+FROM node:25-alpine
 
 ARG SERVICE
 ENV COREPACK_ENABLE_DOWNLOAD_PROMPT=0
