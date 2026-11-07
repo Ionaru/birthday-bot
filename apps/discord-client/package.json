@@ -9,6 +9,6 @@
     "dependencies": {
         "@birthday-bot/common": "workspace:*",
         "@birthday-bot/interfaces": "workspace:*",
-        "discord.js": "^14.27.0"
+        "discord.js": "^14.28.1"
     }
 }
